@@ -1,24 +1,38 @@
 /** @jsxImportSource @emotion/react */
-import { Fragment } from "react";
-import { BrowserRouter } from "react-router-dom";
-import { Routes, Route } from "react-router-dom";
+import React from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { GlobalStyles } from "./components/global-styles";
 import { PageLayout } from "./components/page-layout";
-import { HomePage } from "./pages/home";
-import { AboutPage } from "./pages/about";
+
+const LazyLoadedHomePage = React.lazy(() => import("./pages/home"));
+const LazyLoadedAboutPage = React.lazy(() => import("./pages/about"));
 
 export const App = () => {
   return (
-    <Fragment>
+    <React.Fragment>
       <GlobalStyles />
       <BrowserRouter>
         <PageLayout>
           <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="about" element={<AboutPage />} />
+            <Route
+              path="/"
+              element={
+                <React.Suspense fallback={<div>Loading home page</div>}>
+                  <LazyLoadedHomePage />
+                </React.Suspense>
+              }
+            />
+            <Route
+              path="about"
+              element={
+                <React.Suspense fallback={<div>Loading about page</div>}>
+                  <LazyLoadedAboutPage />
+                </React.Suspense>
+              }
+            />
           </Routes>
         </PageLayout>
       </BrowserRouter>
-    </Fragment>
+    </React.Fragment>
   );
 };
